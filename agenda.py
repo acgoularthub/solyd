@@ -11,8 +11,12 @@ AGENDA['João'] = {
   }
 
 def mostrar_contatos():
-  for contato in AGENDA:
-    buscar_contato(contato)
+  if AGENDA:
+    for contato in AGENDA:
+      buscar_contato(contato)
+  else:
+    print('Agenda vazia')
+  print()
 
 def buscar_contato(contato):
   try:
@@ -41,12 +45,25 @@ def excluir_contato(contato):
   except KeyError:
     print('Contato inexistente')
 
+def exportar_contatos(nome_arquivo):
+  try:
+    with open(nome_arquivo, 'w') as arquivo:
+      for contato in AGENDA:
+        telefone = AGENDA[contato]['telefone']
+        email = AGENDA[contato]['email']
+        arquivo.write("{}, {}, {}\n".format(contato, telefone, email))
+    print('Contatos exportados com sucesso')
+  except Exception as error:
+    print('Algum erro ocorreu ao exportar contatos')
+    print(error)
+
 def imprimir_menu():
   print('1 - Mostrar todos os contatos')
   print('2 - Buscar contato')
   print('3 - Incluir contato')
   print('4 - Excluir contato')
   print('5 - Editar contato')
+  print('6 - Exportar contatos para CSV')
   print('0 - Sair')
   print()
 
@@ -68,6 +85,11 @@ while True:
   elif opcao == '4':
     contato = input('Nome do contato: ')
     excluir_contato(contato)
+
+  elif opcao == '6':
+    nome_arquivo = input('Digite o nome do arquivo CSV: ')
+    exportar_contatos(nome_arquivo)
+
   elif opcao == '0':
     print('Até mais!')
     break
