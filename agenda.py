@@ -47,6 +47,9 @@ def excluir_contato(contato):
 
 def exportar_contatos(nome_arquivo):
   try:
+    #fazer com que o arquivo gerado tenha o nome + .CSV no final do nome difgitado pelo usuário
+    nome_arquivo = nome_arquivo + '.csv'
+
     with open(nome_arquivo, 'w') as arquivo:
       for contato in AGENDA:
         telefone = AGENDA[contato]['telefone']
@@ -57,6 +60,23 @@ def exportar_contatos(nome_arquivo):
     print('Algum erro ocorreu ao exportar contatos')
     print(error)
 
+def importar_contatos(nome_arquivo):
+  try:
+    with open(nome_arquivo, 'r') as arquivo:
+      linhas = arquivo.readlines()
+      for linha in linhas:
+        detalhes = linha.strip().split(',')
+        contato = detalhes[0]
+        telefone = detalhes[1]
+        email = detalhes[2]
+        incluir_editar_contato(contato, telefone, email)
+    print('Contatos importados com sucesso')
+  except FileNotFoundError:
+    print('Arquivo não encontrado')
+  except Exception as error:
+    print('Algum erro ocorreu ao importar contatos')
+    print(error)
+
 def imprimir_menu():
   print('1 - Mostrar todos os contatos')
   print('2 - Buscar contato')
@@ -64,6 +84,7 @@ def imprimir_menu():
   print('4 - Excluir contato')
   print('5 - Editar contato')
   print('6 - Exportar contatos para CSV')
+  print('7 - Importar contatos de um arquivo CSV')
   print('0 - Sair')
   print()
 
@@ -89,6 +110,10 @@ while True:
   elif opcao == '6':
     nome_arquivo = input('Digite o nome do arquivo CSV: ')
     exportar_contatos(nome_arquivo)
+
+  elif opcao == '7':
+    nome_arquivo = input('Digite o nome do arquivo CSV: ')
+    importar_contatos(nome_arquivo)
 
   elif opcao == '0':
     print('Até mais!')
