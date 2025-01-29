@@ -1,14 +1,14 @@
 AGENDA = {}
 
-AGENDA['Anderson'] = {
-  'telefone': '1234-5678', 
-  'email': 'acgoulartmail@gmail.com'
-  }
+# AGENDA['Anderson'] = {
+#   'telefone': '1234-5678', 
+#   'email': 'acgoulartmail@gmail.com'
+#   }
 
-AGENDA['João'] = {
-  'telefone': '1234-5678', 
-  'email': 'joao@joao.com'
-  }
+# AGENDA['João'] = {
+#   'telefone': '1234-5678', 
+#   'email': 'joao@joao.com'
+#   }
 
 def mostrar_contatos():
   if AGENDA:
@@ -32,16 +32,20 @@ def incluir_editar_contato(contato, telefone, email):
     'telefone': telefone,
     'email': email
   }
+  salvar_agenda()
   print()
   print('Contato {} adicionado com sucesso'.format(contato))  
   print()
+  
 
 def excluir_contato(contato):
   try:
     AGENDA.pop(contato)
+    salvar_agenda()
     print()
     print('Contato {} excluído com sucesso'.format(contato))  
     print()
+    
   except KeyError:
     print('Contato inexistente')
 
@@ -77,6 +81,33 @@ def importar_contatos(nome_arquivo):
     print('Algum erro ocorreu ao importar contatos')
     print(error)
 
+def salvar_agenda():
+  try:
+    with open('bd_agenda.csv', 'w') as arquivo:
+      for contato in AGENDA:
+        telefone = AGENDA[contato]['telefone']
+        email = AGENDA[contato]['email']
+        arquivo.write("{}, {}, {}\n".format(contato, telefone, email))
+  except Exception as error:
+    print('Algum erro ocorreu ao salvar a agenda')
+    print(error)
+
+def carregar_agenda():
+  try:
+    with open('bd_agenda.csv', 'r') as arquivo:
+      linhas = arquivo.readlines()
+      for linha in linhas:
+        detalhes = linha.strip().split(',')
+        contato = detalhes[0]
+        telefone = detalhes[1]
+        email = detalhes[2]
+        AGENDA[contato] = {
+          'telefone': telefone,
+          'email': email
+        }
+  except Exception as error:
+    pass
+
 def imprimir_menu():
   print('1 - Mostrar todos os contatos')
   print('2 - Buscar contato')
@@ -88,7 +119,10 @@ def imprimir_menu():
   print('0 - Sair')
   print()
 
+carregar_agenda()
+
 while True:
+  
   imprimir_menu()
   opcao = input('Escolha uma opção: ')
   print()
